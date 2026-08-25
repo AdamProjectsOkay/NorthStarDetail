@@ -1,0 +1,17 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Secrets / per-environment config — never commit (see *.example.php)
+crm-auth.php
+meta-config.php
+mail-config.php
+
+# Runtime data + logs (live on the server only; contains customer PII)
+crm-store.php
+crm-store.php.lock
+visit-store.php
+visit-store.php.lock
+event-store.php
+event-store.php.lock
+meta-webhook-log.php
