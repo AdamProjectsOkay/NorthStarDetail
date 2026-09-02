@@ -6,25 +6,27 @@ static HTML + React/JSX transpiled client-side via CDN Babel. Leads are
 stored in a PHP-guarded JSON file (no database server required), matching
 what a small local business can run on cheap shared PHP hosting.
 
-## BEFORE THIS GOES LIVE
-
-**The phone number and business contact info in this repo are placeholders.**
-`(780) 555-0100` appears in `index.html`, `app.jsx`, and the JSON-LD
-structured data — it is an obviously-fake number and must be replaced with
-NorthStar's real phone number (and any real email address) before launch.
-Search the repo for `555-0100` / `5550100` to find every occurrence.
+The public site (real copy, real pricing, real phone number, real
+before/after photos) predates the CRM and was originally built and exported
+as a self-contained design artifact. It's since been unpacked into normal
+per-component files (`header.jsx`, `hero.jsx`, etc.) so it lives in the same
+plain-file style as the CRM, and its booking form — which previously only
+showed a local "thanks" message — now actually submits into the CRM via
+`lead-submit.php`.
 
 ## Stack
 
-- **Public site**: `index.html` (hero, lead form, before/after gallery,
-  how-it-works, trust strip, footer) + `app.jsx`, `sections.jsx`, `phone.jsx`,
-  `icons.jsx`, `admin.jsx`.
+- **Public site**: `index.html` (design tokens, Header, Hero, PricingGrid,
+  AddOns, ResultsGallery, BookingForm, MobileServiceBand, Footer) +
+  `header.jsx`, `hero.jsx`, `pricing.jsx`, `addons.jsx`, `gallery.jsx`,
+  `booking.jsx`, `service-area.jsx`, `footer.jsx`, `admin.jsx`. Real photos
+  live in `images/`.
 - **CRM**: `crm.php` (session-gated shell) + `crm-app.jsx`, `crm-data.jsx`,
-  `crm-leaddetail.jsx`. Dashboard, leads table, drag-and-drop pipeline
-  (New → Contacted → Scheduled → Completed → Dead), and basic analytics.
-  Enter it with `login.php`, or the hidden entry points baked into the
-  public site: **Ctrl + 4, 4, 4** on desktop, or tap the footer logo 5 times
-  on mobile.
+  `crm-leaddetail.jsx`, `icons.jsx`. Dashboard, leads table, drag-and-drop
+  pipeline (New → Contacted → Scheduled → Completed → Dead), and basic
+  analytics. Enter it with `login.php`, or the hidden entry points baked
+  into the public site: **Ctrl + 4, 4, 4** on desktop (`admin.jsx`), or tap
+  the "We come to you." headline 4 times on mobile (`service-area.jsx`).
 - **Backend/data**: `crm-lib.php` (JSON store + locking + lead helpers),
   `crm-leads.php` / `lead-add.php` / `lead-submit.php` / `lead-update.php`
   (API endpoints).
@@ -59,10 +61,8 @@ Search the repo for `555-0100` / `5550100` to find every occurrence.
    file is left blank or missing, lead capture still works fine — new leads
    just won't trigger an email/SMS alert.
 
-4. **Fill in the real phone number.** Replace every occurrence of
-   `(780) 555-0100` / `+17805550100` in `index.html` and `app.jsx` with
-   NorthStar's real number, and update the `telephone` field in the JSON-LD
-   block in `index.html`.
+4. **Phone number is already real** (780-781-5615, used throughout
+   `index.html` and the component files) — no placeholder to swap.
 
 5. **Once a Meta ad account exists**, fill in `meta-config.php` with the real
    Pixel ID, App Secret, Page token, and Conversions API token, then
@@ -70,9 +70,8 @@ Search the repo for `555-0100` / `5550100` to find every occurrence.
    (search for "REPLACE_WITH_REAL_PIXEL_ID") and paste the same Pixel ID in
    both places. Same idea for Google tag (`REPLACE_WITH_REAL_GA_ID`).
 
-6. **Add real before/after photos.** The gallery section on the homepage
-   currently uses styled placeholder cards (no real photos exist yet) —
-   see `BeforeAfterGallery` in `sections.jsx`.
+6. **Gallery already has real before/after photos** (`images/`) — add more
+   over time by following the pattern in `gallery.jsx`.
 
 7. **Upload everything to any PHP host** (shared hosting is fine — no
    database, no build step, no Node required). Make sure the real
@@ -95,6 +94,14 @@ Pipeline stages: **New → Contacted → Scheduled → Completed → Dead**.
 
 ## Changelog
 
+- **2026-09-01** — v1.0.1: the CRM/backend commit below had replaced the
+  real, previously-designed public site with a from-scratch rebuild
+  (placeholder phone number, no real photos, booking form never wired to
+  a backend). Restored the real site — unpacked from its original
+  self-contained export into per-component files — and wired its booking
+  form into `lead-submit.php` so it actually captures leads. `lead-submit.php`
+  now also accepts optional `vehicle`/`package`/`address` fields and no
+  longer requires an email (the real form doesn't collect one).
 - **2026-08-24** — v1.0.0: initial CRM + lead-gen backend, ported from a
   sister project's architecture and rebuilt for a mobile detailing business
   (own field set, own copy, before/after gallery instead of a vehicle

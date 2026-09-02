@@ -25,7 +25,7 @@ $srcClean = substr(preg_replace('/[^a-zA-Z0-9 ._-]/', '', trim($_POST['source'] 
 $source   = $srcClean !== '' ? $srcClean : 'Website form';
 
 // Meta click-identity cookies. Prefer what the browser read and posted (see
-// app.jsx) since it can reconstruct _fbc from a live fbclid even when a
+// booking.jsx) since it can reconstruct _fbc from a live fbclid even when a
 // blocker prevented fbevents.js from ever setting the cookie; fall back to
 // reading the cookies directly for cached JS that predates this.
 $fbp = substr(preg_replace('/[^a-zA-Z0-9_.]/', '', trim($_POST['fbp'] ?? '')), 0, 200);
@@ -34,9 +34,9 @@ if ($fbp === '') $fbp = $_COOKIE['_fbp'] ?? '';
 if ($fbc === '') $fbc = $_COOKIE['_fbc'] ?? '';
 
 $err = '';
-if ($name === '' || mb_strlen($name) > 120)         $err = 'Please enter your name.';
-elseif (strlen($digits) < 10)                        $err = 'Please enter a valid phone number.';
-elseif (!filter_var($email, FILTER_VALIDATE_EMAIL))  $err = 'Please enter a valid email.';
+if ($name === '' || mb_strlen($name) > 120)                              $err = 'Please enter your name.';
+elseif (strlen($digits) < 10)                                            $err = 'Please enter a valid phone number.';
+elseif ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL))     $err = 'Please enter a valid email.';
 
 if ($err !== '') {
   http_response_code(422);
@@ -44,21 +44,27 @@ if ($err !== '') {
   exit;
 }
 
-$name  = mb_substr($name, 0, 120);
-$email = mb_substr($email, 0, 160);
-$phone = mb_substr($phone, 0, 40);
-$want  = mb_substr($want, 0, 2000);
+$name    = mb_substr($name, 0, 120);
+$email   = mb_substr($email, 0, 160);
+$phone   = mb_substr($phone, 0, 40);
+$want    = mb_substr($want, 0, 2000);
+$vehicle = mb_substr(trim($_POST['vehicle'] ?? ''), 0, 500);
+$package = mb_substr(trim($_POST['package'] ?? ''), 0, 500);
+$address = mb_substr(trim($_POST['address'] ?? ''), 0, 500);
 
 // crm_add_lead handles its own locking/sequencing/de-dup
 crm_add_lead([
-  'name'   => $name,
-  'phone'  => $phone,
-  'email'  => $email,
-  'want'   => $want,
-  'source' => $source,
-  'ip'     => $_SERVER['REMOTE_ADDR'] ?? '',
-  'fbp'    => $fbp,
-  'fbc'    => $fbc,
+  'name'    => $name,
+  'phone'   => $phone,
+  'email'   => $email,
+  'want'    => $want,
+  'vehicle' => $vehicle,
+  'package' => $package,
+  'address' => $address,
+  'source'  => $source,
+  'ip'      => $_SERVER['REMOTE_ADDR'] ?? '',
+  'fbp'     => $fbp,
+  'fbc'     => $fbc,
 ]);
 
 echo json_encode(['ok' => true]);
